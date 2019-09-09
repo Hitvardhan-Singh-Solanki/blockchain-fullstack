@@ -7,12 +7,17 @@ describe("Block", () => {
     lastHash = "last-hash",
     hash = "hash",
     data = "data",
-    block = new Block({ timeStamp, lastHash, hash, data });
+    nonce = 1,
+    difficulty = 1,
+    block = new Block({ timeStamp, lastHash, hash, data, nonce, difficulty });
+
   it("should create a Block", () => {
     expect(block.timeStamp).toEqual(timeStamp);
     expect(block.lastHash).toEqual(lastHash);
     expect(block.hash).toEqual(hash);
     expect(block.data).toEqual(data);
+    expect(block.nonce).toEqual(nonce);
+    expect(block.difficulty).toEqual(difficulty);
   });
 });
 
@@ -44,7 +49,18 @@ describe("mine a block", () => {
   });
   it("should create a sha256 hash", () => {
     expect(minedBlock.hash).toEqual(
-      cryptoHash(minedBlock.timeStamp, lastBlock.hash, data)
+      cryptoHash(
+        minedBlock.timeStamp,
+        lastBlock.hash,
+        data,
+        minedBlock.nonce,
+        minedBlock.difficulty
+      )
+    );
+  });
+  it("should set a hash that matches the difficulty criteria", () => {
+    expect(minedBlock.hash.substring(0, minedBlock.difficulty)).toEqual(
+      "0".repeat(minedBlock.difficulty)
     );
   });
 });

@@ -1,8 +1,12 @@
+const INITIAL_DIFFICULTY = 3;
+
 const GENESIS_DATA = {
   timeStamp: 1,
   lastHash: "-----",
   hash: "hash-one",
-  data: []
+  data: [],
+  difficulty: INITIAL_DIFFICULTY,
+  nonce: 0
 };
 
 const STRING = "foo-bar";
