@@ -1,4 +1,4 @@
-const { GENESIS_DATA } = require("./config.js");
+const { GENESIS_DATA, MINE_RATE } = require("./config.js");
 const cryptoHash = require("./cryptoHash");
 
 class Block {
@@ -17,14 +17,17 @@ class Block {
   static mineBlock({ lastBlock, data }) {
     let timeStamp,
       hash,
+      { difficulty } = lastBlock,
       lastHash = lastBlock.hash,
       nonce = 0;
-
-    const { difficulty } = lastBlock;
 
     do {
       nonce++;
       timeStamp = Date.now();
+      difficulty = Block.adjustDifficulty({
+        originalBlock: lastBlock,
+        timeStamp
+      });
       hash = cryptoHash(timeStamp, lastHash, data, nonce, difficulty);
     } while (hash.substring(0, difficulty) !== "0".repeat(difficulty));
 
@@ -36,6 +39,13 @@ class Block {
       nonce,
       difficulty
     });
+  }
+
+  static adjustDifficulty({ originalBlock, timeStamp }) {
+    const { difficulty } = originalBlock;
+    if (difficulty < 1) return 1;
+    if (timeStamp - originalBlock.timeStamp > MINE_RATE) return difficulty - 1;
+    return difficulty + 1;
   }
 }
 
