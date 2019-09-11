@@ -1,5 +1,6 @@
 const Block = require("./block");
 const Blockchain = require("./blockchain");
+const cryptoHash = require("./cryptoHash");
 
 describe("Blockchain", () => {
   let blockchain, newChain, originalChain;
@@ -30,12 +31,37 @@ describe("Blockchain", () => {
         expect(Blockchain.isValidChain(blockchain.chain)).toBe(false);
       });
     });
-    describe("when the chain has a genesis block", () => {
+    describe("when the chain has a genesis block and has multiple blocks", () => {
       beforeEach(() => {
         blockchain.addBlock({ data: "bears" });
         blockchain.addBlock({ data: "test" });
         blockchain.addBlock({ data: "red" });
       });
+
+      describe("and the chain contains a block with jumped difficulty", () => {
+        it("should return false", () => {
+          const lastBlock = blockchain.chain[blockchain.chain.length - 1];
+          const lastHash = lastBlock.hash;
+          const timeStamp = Date.now();
+          const nonce = 0;
+          const data = [];
+          const difficulty = lastBlock.difficulty - 3;
+          const hash = cryptoHash(timeStamp, lastHash, nonce, difficulty, data);
+
+          const badBlock = new Block({
+            timeStamp,
+            data,
+            lastHash,
+            hash,
+            nonce,
+            difficulty
+          });
+
+          blockchain.chain.push(badBlock);
+          expect(Blockchain.isValidChain(blockchain.chain)).toBe(false);
+        });
+      });
+
       describe("and a lastHash reference has changed", () => {
         it("should return false", () => {
           blockchain.chain[2].lastHash = "broken-chain";
