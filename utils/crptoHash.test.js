@@ -1,5 +1,5 @@
 const cryptoHash = require("./cryptoHash");
-const { SHA256, STRING } = require("./config.js");
+const { SHA256, STRING } = require("../config.js");
 
 describe("cryptoHash()", () => {
   it("should generate sha256 hashed output", () => {
