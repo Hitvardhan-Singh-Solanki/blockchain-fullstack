@@ -14,11 +14,12 @@
   "license": "ISC",
   "devDependencies": {
     "cross-env": "^5.2.1",
-    "jest": "^23.6.0"
+    "jest": "^23.6.0",
+    "uuid": "^3.3.3"
   },
- "jest":{
-   "testEnvironment": "node"
- },
+  "jest": {
+    "testEnvironment": "node"
+  },
   "dependencies": {
     "body-parser": "^1.19.0",
     "chalk": "^2.4.2",
