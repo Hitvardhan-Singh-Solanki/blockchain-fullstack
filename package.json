@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --watchAll",
+    "dev-peer": "cross-env-shell PEER_PORTING='true' nodemon index.js",
     "start-redis": "redis-server --daemonize yes",
     "start": "nodemon ."
   },
@@ -12,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "cross-env": "^5.2.1",
     "jest": "^23.6.0"
   },
   "dependencies": {
@@ -19,6 +21,7 @@
     "chalk": "^2.4.2",
     "express": "^4.17.1",
     "hex-to-binary": "^1.0.1",
-    "redis": "^2.8.0"
+    "redis": "^2.8.0",
+    "request": "^2.88.0"
   }
 }
