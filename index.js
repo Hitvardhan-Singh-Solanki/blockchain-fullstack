@@ -1,10 +1,16 @@
 const express = require("express");
 const chalk = require("chalk");
 const Blockchain = require("./blockchain");
+const PubSub = require("./pubsub");
 const bodyParser = require("body-parser");
 
 const app = express();
 const blockchain = new Blockchain();
+const pubsub = new PubSub({ blockchain });
+
+setTimeout(() => {
+  pubsub.broadcastChain();
+}, 1000);
 
 app.use(bodyParser.json());
 
