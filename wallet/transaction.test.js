@@ -55,4 +55,37 @@ describe("Transaction", () => {
       ).toBe(true);
     });
   });
+
+  describe("validTransaction()", () => {
+    let errorMock;
+
+    beforeEach(() => {
+      errorMock = jest.fn();
+      global.console.error = errorMock;
+    });
+
+    describe("when the trx is valid", () => {
+      it("should return true", () => {
+        expect(Transaction.validTransaction(transaction)).toBe(true);
+      });
+    });
+
+    describe("when the trx is invalid", () => {
+      describe("and the trx output map value is invalid", () => {
+        it("should return false and logs an error", () => {
+          transaction.outputMap[senderWallet.publicKey] = 999999;
+          expect(Transaction.validTransaction(transaction)).toBe(false);
+          expect(errorMock).toHaveBeenCalled();
+        });
+      });
+
+      describe("and the trx input sign is invalid", () => {
+        it("should return false and logs an error", () => {
+          transaction.input.signature = new Wallet().sign("data");
+          expect(Transaction.validTransaction(transaction)).toBe(false);
+          expect(errorMock).toHaveBeenCalled();
+        });
+      });
+    });
+  });
 });
