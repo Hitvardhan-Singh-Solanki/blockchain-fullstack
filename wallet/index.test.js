@@ -1,5 +1,7 @@
 const Wallet = require(".");
+const Blockchain = require("../blockchain/blockchain");
 const { verifySignature } = require("../utils");
+const { STARTING_BALANCE } = require("../config");
 const Transaction = require("./transaction");
 describe("Wallet", () => {
   let wallet;
@@ -62,6 +64,68 @@ describe("Wallet", () => {
       });
       it("should output the amount the recipient", () => {
         expect(transaction.outputMap[recipient]).toEqual(amount);
+      });
+    });
+    describe("and a chain is passed", () => {
+      it("calls `Wallet.calculateBalance`", () => {
+        const calculateBalanceMock = jest.fn();
+
+        const originalCalculateBalance = Wallet.calculateBalance;
+
+        Wallet.calculateBalance = calculateBalanceMock;
+
+        wallet.createTransaction({
+          recipient: "foo",
+          amount: 10,
+          chain: new Blockchain().chain
+        });
+
+        expect(calculateBalanceMock).toHaveBeenCalled();
+
+        Wallet.calculateBalance = originalCalculateBalance;
+      });
+    });
+  });
+
+  describe("calculateBalance()", () => {
+    let blockchain;
+    beforeEach(() => {
+      blockchain = new Blockchain();
+    });
+    describe("and there are no outputs to the wallet", () => {
+      it("should return the STARTING_BALANCE", () => {
+        expect(
+          Wallet.calculateBalance({
+            chain: blockchain.chain,
+            address: wallet.publicKey
+          })
+        ).toEqual(STARTING_BALANCE);
+      });
+    });
+    describe("and there are o/p for wallets", () => {
+      let trx1, trx2;
+      beforeEach(() => {
+        trx1 = new Wallet().createTransaction({
+          recipient: wallet.publicKey,
+          amount: 50
+        });
+        trx2 = new Wallet().createTransaction({
+          recipient: wallet.publicKey,
+          amount: 60
+        });
+        blockchain.addBlock({ data: [trx1, trx2] });
+      });
+      it("should add the sum to the wallet balance", () => {
+        expect(
+          Wallet.calculateBalance({
+            chain: blockchain.chain,
+            address: wallet.publicKey
+          })
+        ).toEqual(
+          STARTING_BALANCE +
+            trx1.outputMap[wallet.publicKey] +
+            trx2.outputMap[wallet.publicKey]
+        );
       });
     });
   });
