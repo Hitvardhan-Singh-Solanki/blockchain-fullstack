@@ -18,4 +18,18 @@ const STRING = "foo-bar";
 const SHA256 =
   "291ad95de298fed69e1c8425874cbdf1f4205136978e5e31b7e7e41078b60fc7";
 
-module.exports = { GENESIS_DATA, STRING, SHA256, MINE_RATE, STARTING_BALANCE };
+const REWARD_INPUT = {
+  address: "*authorized-reward*"
+};
+
+const MINING_REWARD = 50;
+
+module.exports = {
+  GENESIS_DATA,
+  STRING,
+  SHA256,
+  MINE_RATE,
+  STARTING_BALANCE,
+  REWARD_INPUT,
+  MINING_REWARD
+};
