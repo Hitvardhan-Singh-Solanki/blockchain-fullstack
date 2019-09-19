@@ -8,7 +8,8 @@
     "dev-peer": "cross-env-shell PEER_PORTING='true' nodemon index.js",
     "start-redis": "redis-server --daemonize yes",
     "start": "nodemon .",
-    "build:client": "parcel build client/src/index.html --out-dir client/dist"
+    "build:client": "parcel build client/src/index.html --out-dir client/dist",
+    "dev-client": "parcel client/src/index.html --out-dir client/dist"
   },
   "keywords": [],
   "author": "",
@@ -25,6 +26,7 @@
   "dependencies": {
     "body-parser": "^1.19.0",
     "chalk": "^2.4.2",
+    "components": "^0.1.0",
     "elliptic": "^6.5.1",
     "express": "^4.17.1",
     "hex-to-binary": "^1.0.1",
