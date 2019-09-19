@@ -31,7 +31,7 @@ setTimeout(() => {
 }, 1000);
 
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, "client")));
+app.use(express.static(path.join(__dirname, "client/dist")));
 
 app.get("/api/blocks", (_, res) => {
   res.json(blockchain.chain);

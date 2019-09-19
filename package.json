@@ -7,7 +7,8 @@
     "test": "jest --watchAll",
     "dev-peer": "cross-env-shell PEER_PORTING='true' nodemon index.js",
     "start-redis": "redis-server --daemonize yes",
-    "start": "nodemon ."
+    "start": "nodemon .",
+    "build:client": "parcel build client/src/index.html --out-dir client/dist"
   },
   "keywords": [],
   "author": "",
@@ -15,6 +16,7 @@
   "devDependencies": {
     "cross-env": "^5.2.1",
     "jest": "^23.6.0",
+    "parcel": "^1.12.3",
     "uuid": "^3.3.3"
   },
   "jest": {
