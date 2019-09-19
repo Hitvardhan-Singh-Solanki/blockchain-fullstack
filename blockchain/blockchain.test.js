@@ -1,14 +1,17 @@
 const Block = require("./block");
 const Blockchain = require("./blockchain");
+const Wallet = require("../wallet");
+const Transaction = require("../wallet/transaction");
 const { cryptoHash } = require("../utils");
 
 describe("Blockchain", () => {
-  let blockchain, newChain, originalChain;
+  let blockchain, newChain, originalChain, errorMock;
 
   beforeEach(() => {
     blockchain = new Blockchain();
     newChain = new Blockchain();
-
+    errorMock = jest.fn();
+    global.console.error = errorMock;
     originalChain = blockchain.chain;
   });
 
@@ -83,11 +86,9 @@ describe("Blockchain", () => {
   });
 
   describe("replaceChain()", () => {
-    let errorMock, logMock;
+    let logMock;
     beforeEach(() => {
-      errorMock = jest.fn();
       logMock = jest.fn();
-      global.console.error = errorMock;
       global.console.log = logMock;
     });
     describe("when the new chain is not longer", () => {
@@ -130,6 +131,74 @@ describe("Blockchain", () => {
         it("should log an chain replacement", () => {
           expect(logMock).toHaveBeenCalled();
         });
+      });
+    });
+  });
+
+  describe("validTransactionData()", () => {
+    let transaction, rewardTransaction, wallet;
+    beforeEach(() => {
+      wallet = new Wallet();
+      transaction = wallet.createTransaction({
+        recipient: "foo-address",
+        amount: 60
+      });
+      rewardTransaction = Transaction.rewardTransaction({
+        minerWallet: wallet
+      });
+    });
+    describe("and the trx data is valid", () => {
+      it("should return true", () => {
+        newChain.addBlock({ data: [transaction, rewardTransaction] });
+        expect(blockchain.validTransactionData({ chain: newChain.chain })).toBe(
+          true
+        );
+        expect(errorMock).not.toHaveBeenCalled();
+      });
+    });
+    describe("and the trx data is invalid", () => {
+      describe("and the trx data has multiple rewards", () => {
+        it("should return false  and logs an error", () => {
+          newChain.addBlock({
+            data: [transaction, rewardTransaction, rewardTransaction]
+          });
+          expect(
+            blockchain.validTransactionData({ chain: newChain.chain })
+          ).toBe(false);
+          expect(errorMock).toHaveBeenCalled();
+        });
+      });
+      describe("and the trx data has at least one malformed o/p map", () => {
+        describe("and teh trx is not a reward trx", () => {
+          it("should return false and logs an error", () => {
+            transaction.outputMap[wallet.publicKey] = 999999;
+            newChain.addBlock({
+              data: [transaction, rewardTransaction]
+            });
+            expect(
+              blockchain.validTransactionData({ chain: newChain.chain })
+            ).toBe(false);
+            expect(errorMock).toHaveBeenCalled();
+          });
+        });
+        describe("and the trx is a reward trx", () => {
+          it("should return false and logs an error", () => {
+            rewardTransaction.outputMap[wallet.publicKey] = 999999;
+            newChain.addBlock({
+              data: [transaction, rewardTransaction]
+            });
+            expect(
+              blockchain.validTransactionData({ chain: newChain.chain })
+            ).toBe(false);
+            expect(errorMock).toHaveBeenCalled();
+          });
+        });
+      });
+      describe("and the trx data has at least one malformed i/p", () => {
+        it("should return false and logs an error", () => {});
+      });
+      describe("and a block contains multiple identical trx", () => {
+        it("should return false and logs an error", () => {});
       });
     });
   });
