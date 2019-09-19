@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Block from "./Block";
 
 export default class App extends Component {
   state = {
@@ -16,9 +17,13 @@ export default class App extends Component {
     const { address, balance } = this.state.walletInfo;
     return (
       <>
-        <h1>Current wallet</h1>
+        <h3>Current wallet</h3>
         <p>Address: {address}</p>
         <p>Balance: {balance}</p>
+        <div>
+          <h3>Blocks</h3>
+          <Block />
+        </div>
       </>
     );
   }
