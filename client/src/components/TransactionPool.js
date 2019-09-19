@@ -57,7 +57,11 @@ export default class TransactionPool extends Component {
           );
         })}
         <hr />
-        <Button variant="danger" onClick={this.fetchMineTransactions}>
+        <Button
+          disabled={Object.values(this.state.transactionPoolMap).length === 0}
+          variant="danger"
+          onClick={this.fetchMineTransactions}
+        >
           Mine the Transactions
         </Button>
       </div>

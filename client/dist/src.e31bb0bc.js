@@ -52737,7 +52737,7 @@ function (_Component) {
       var _this$state = _this.state,
           recipient = _this$state.recipient,
           amount = _this$state.amount;
-      fetch("".concat(document.location.origin, "/api/transact"), {
+      fetch("/api/transact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -52748,9 +52748,9 @@ function (_Component) {
         })
       }).then(function (response) {
         return response.json();
-      }).then(function (json) {
-        alert(json.message || json.type);
-
+      }).catch(function (e) {
+        console.log("-->", e);
+      }).finally(function () {
         _history.default.push("/transaction-pool");
       });
     });
@@ -52913,6 +52913,7 @@ function (_Component) {
           transaction: transaction
         }));
       }), _react.default.createElement("hr", null), _react.default.createElement(_reactBootstrap.Button, {
+        disabled: Object.values(this.state.transactionPoolMap).length === 0,
         variant: "danger",
         onClick: this.fetchMineTransactions
       }, "Mine the Transactions"));

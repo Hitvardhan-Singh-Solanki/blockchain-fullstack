@@ -23,14 +23,16 @@ export default class ConductTransaction extends Component {
   conductTransaction = () => {
     const { recipient, amount } = this.state;
 
-    fetch(`${document.location.origin}/api/transact`, {
+    fetch(`/api/transact`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ recipient, amount })
     })
       .then(response => response.json())
-      .then(json => {
-        alert(json.message || json.type);
+      .catch(e => {
+        console.log("-->", e);
+      })
+      .finally(() => {
         history.push("/transaction-pool");
       });
   };
