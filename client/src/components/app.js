@@ -1,5 +1,7 @@
-import React from "react";
+import React, { Component } from "react";
 
-export default props => {
-  return <h1>CRYPTO CHAIN IN REACT 16.9.0</h1>;
-};
+export default class App extends Component {
+  render() {
+    return <h1>CLASS BASED</h1>;
+  }
+}
