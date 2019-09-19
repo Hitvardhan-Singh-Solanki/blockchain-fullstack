@@ -7,9 +7,10 @@
     "test": "jest --watchAll",
     "dev-peer": "cross-env-shell PEER_PORTING='true' nodemon index.js",
     "start-redis": "redis-server --daemonize yes",
-    "start": "nodemon .",
-    "build:client": "parcel build client/src/index.html --out-dir client/dist",
-    "dev-client": "parcel client/src/index.html --out-dir client/dist"
+    "start": "npm run dev-client && nodemon .",
+    "build:client": "npm run clean && parcel build client/src/index.html --out-dir client/dist",
+    "dev-client": "npm run clean && parcel client/src/index.html --out-dir client/dist",
+    "clean": "rm -rf .cache client/dist"
   },
   "keywords": [],
   "author": "",
