@@ -24,7 +24,7 @@ class PubSub {
     const parsedMsg = JSON.parse(message);
     switch (channel) {
       case channels.BLOCKCHAIN:
-        this.blockchain.replaceChain(parsedMsg, () => {
+        this.blockchain.replaceChain(parsedMsg, true, () => {
           this.transactionPool.clearBlockchainTransactions({
             chain: parsedMsg
           });

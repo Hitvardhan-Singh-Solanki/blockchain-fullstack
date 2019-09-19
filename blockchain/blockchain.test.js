@@ -133,6 +133,15 @@ describe("Blockchain", () => {
         });
       });
     });
+    describe("and the validate trx flag is true", () => {
+      it("should call validTransactionData()", () => {
+        const validTrxDataMock = jest.fn();
+        blockchain.validTransactionData = validTrxDataMock;
+        newChain.addBlock({ data: "foo" });
+        blockchain.replaceChain(newChain.chain, true);
+        expect(validTrxDataMock).toHaveBeenCalled();
+      });
+    });
   });
 
   describe("validTransactionData()", () => {
@@ -195,7 +204,31 @@ describe("Blockchain", () => {
         });
       });
       describe("and the trx data has at least one malformed i/p", () => {
-        it("should return false and logs an error", () => {});
+        it("should return false and logs an error", () => {
+          wallet.balance = 9000;
+
+          const evilOutputMap = {
+            [wallet.publicKey]: 8900,
+            fooRecipient: 100
+          };
+
+          const evilTransaction = {
+            input: {
+              timestamp: Date.now(),
+              amount: wallet.balance,
+              address: wallet.publicKey,
+              signature: wallet.sign(evilOutputMap)
+            },
+            outputMap: evilOutputMap
+          };
+
+          newChain.addBlock({ data: [evilTransaction, rewardTransaction] });
+
+          expect(
+            blockchain.validTransactionData({ chain: newChain.chain })
+          ).toBe(false);
+          expect(errorMock).toHaveBeenCalled();
+        });
       });
       describe("and a block contains multiple identical trx", () => {
         it("should return false and logs an error", () => {});
