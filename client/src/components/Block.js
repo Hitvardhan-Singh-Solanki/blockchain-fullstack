@@ -39,12 +39,12 @@ export default class Block extends Component {
     }
 
     return (
-      <div onclick={() => this.toggleTrx()}>
+      <>
         <div>Data: {dataDisplay}</div>{" "}
         <Button variant="danger" size="sm" onClick={this.toggleTransaction}>
           Show More
         </Button>
-      </div>
+      </>
     );
   }
 

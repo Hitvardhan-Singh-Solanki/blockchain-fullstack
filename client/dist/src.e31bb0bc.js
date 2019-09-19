@@ -52514,8 +52514,6 @@ function (_Component) {
   }, {
     key: "displayTransaction",
     get: function get() {
-      var _this2 = this;
-
       var data = this.props.block.data;
       var stringifyData = JSON.stringify(data);
       var dataDisplay = stringifyData.length > 35 ? "".concat(stringifyData.substring(0, 35), "...") : stringifyData;
@@ -52534,11 +52532,7 @@ function (_Component) {
         }, "Show Less"));
       }
 
-      return _react.default.createElement("div", {
-        onclick: function onclick() {
-          return _this2.toggleTrx();
-        }
-      }, _react.default.createElement("div", null, "Data: ", dataDisplay), " ", _react.default.createElement(_reactBootstrap.Button, {
+      return _react.default.createElement(_react.default.Fragment, null, _react.default.createElement("div", null, "Data: ", dataDisplay), " ", _react.default.createElement(_reactBootstrap.Button, {
         variant: "danger",
         size: "sm",
         onClick: this.toggleTransaction
